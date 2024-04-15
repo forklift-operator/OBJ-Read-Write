@@ -1,14 +1,14 @@
 #include "Object3d.hpp"
 
-void reverse_vector(std::vector<int>& face){
+void reverse_vector(std::vector<int> &face)
+{
     double temp;
-    for (size_t start = 0, end = face.size()-1; start < end; start++,end--)
+    for (size_t start = 0, end = face.size() - 1; start < end; start++, end--)
     {
         temp = face[start];
         face[start] = face[end];
         face[end] = temp;
     }
-    
 };
 
 int Object3d::getVertexCount()
@@ -19,6 +19,30 @@ int Object3d::getVertexCount()
 int Object3d::getFaceCount()
 {
     return this->faces.size();
+}
+
+void Object3d::save(const std::string &filename)
+{
+    std::ofstream file(filename);
+    file << "# Vertices" << std::endl;
+    for (size_t i = 0; i < this->vertices.size(); i++)
+    {
+        file << "v " << this->vertices[i].x << ' ' << this->vertices[i].y << ' ' << this->vertices[i].z << std::endl;
+    }
+
+    file << "# Faces" << std::endl;
+    for (size_t i = 0; i < this->faces.size(); i++)
+    {
+        file << "f ";
+        for (size_t j = 0; j < this->faces[i].size(); j++)
+        {
+            file << this->faces[i][j] + 1 << ' ';
+        }
+        file << std::endl;
+    }
+
+    std::cout << "Saved in " << filename << std::endl;
+    file.close();
 }
 
 Object3d::Object3d(const std::string &filename)
@@ -63,11 +87,10 @@ Object3d::Object3d(const std::string &filename)
 
 void Object3d::flip()
 {
-    for (size_t i = 0; i <this->faces.size(); i++)
+    for (size_t i = 0; i < this->faces.size(); i++)
     {
         reverse_vector(this->faces[i]);
     }
-    
 }
 
 void Object3d::printVertices() const
@@ -86,7 +109,7 @@ void Object3d::printFaces() const
     {
         for (size_t j = 0; j < faces[i].size(); j++)
         {
-            std::cout << faces[i][j] << ' ';
+            std::cout << faces[i][j] + 1 << ' ';
         }
         std::cout << std::endl;
     }
