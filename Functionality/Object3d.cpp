@@ -2,7 +2,7 @@
 
 void reverse_vector(std::vector<int> &face)
 {
-    double temp;
+    int temp;
     for (size_t start = 0, end = face.size() - 1; start < end; start++, end--)
     {
         temp = face[start];
@@ -24,25 +24,16 @@ int Object3d::getFaceCount()
 void Object3d::save(const std::string &filename)
 {
     std::ofstream file(filename);
-    file << "# Vertices" << std::endl;
-    for (size_t i = 0; i < this->vertices.size(); i++)
-    {
-        file << "v " << this->vertices[i].x << ' ' << this->vertices[i].y << ' ' << this->vertices[i].z << std::endl;
-    }
-
-    file << "# Faces" << std::endl;
-    for (size_t i = 0; i < this->faces.size(); i++)
-    {
-        file << "f ";
-        for (size_t j = 0; j < this->faces[i].size(); j++)
-        {
-            file << this->faces[i][j] + 1 << ' ';
-        }
-        file << std::endl;
-    }
-
+    printVertices(file);
+    printFaces(file);
     std::cout << "Saved in " << filename << std::endl;
     file.close();
+}
+
+void Object3d::print(std::ostream &out)
+{
+    printVertices(out);
+    printFaces(out);
 }
 
 Object3d::Object3d(const std::string &filename)
@@ -85,6 +76,29 @@ Object3d::Object3d(const std::string &filename)
     file.close();
 }
 
+Object3d Object3d::cut(std::function<bool(float x, float y, float z)> f) const
+{
+    Object3d cut_object;
+    cut_object.vertices = this->vertices;
+
+    for (const std::vector face : this->faces)
+    {
+        bool includeFace = true;
+        for (const int vertexIndex : face)
+        {
+            includeFace = f(this->vertices[vertexIndex].x, this->vertices[vertexIndex].y, this->vertices[vertexIndex].z);
+            if (!includeFace)
+                break;
+        }
+        if (includeFace)
+        {
+            cut_object.faces.push_back(face);
+        }
+    }
+
+    return cut_object;
+}
+
 void Object3d::flip()
 {
     for (size_t i = 0; i < this->faces.size(); i++)
@@ -93,24 +107,25 @@ void Object3d::flip()
     }
 }
 
-void Object3d::printVertices() const
+void Object3d::printVertices(std::ostream &out) const
 {
-    std::cout << "# Vertices" << std::endl;
+    out << "# Vertices" << std::endl;
     for (size_t i = 0; i < vertices.size(); i++)
     {
-        std::cout << "v " << vertices[i].x << ' ' << vertices[i].y << ' ' << vertices[i].z << std::endl;
+        out << "v " << vertices[i].x << ' ' << vertices[i].y << ' ' << vertices[i].z << std::endl;
     }
 }
 
-void Object3d::printFaces() const
+void Object3d::printFaces(std::ostream &out) const
 {
-    std::cout << "# Faces" << std::endl;
+    out << "# Faces" << std::endl;
     for (size_t i = 0; i < faces.size(); i++)
     {
+        out << "f ";
         for (size_t j = 0; j < faces[i].size(); j++)
         {
-            std::cout << faces[i][j] + 1 << ' ';
+            out << faces[i][j] + 1 << ' ';
         }
-        std::cout << std::endl;
+        out << std::endl;
     }
 }

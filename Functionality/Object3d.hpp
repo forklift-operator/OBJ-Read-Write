@@ -3,6 +3,8 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <functional>
+
 
 class Object3d
 {
@@ -15,8 +17,14 @@ private:
     std::vector<Vertex> vertices;
     std::vector<std::vector<int>> faces;
 
+    void printVertices(std::ostream &out) const;
+    void printFaces(std::ostream &out) const;
+
 public:
+    Object3d(){};
     Object3d(const std::string &filename);
+
+    Object3d cut(std::function<bool(float x, float y, float z)> f) const;
 
     int getVertexCount();
     int getFaceCount();
@@ -24,8 +32,4 @@ public:
     void print(std::ostream &);
     void flip();
 
-    void printVertices() const;
-
-    void printFaces() const;
-    // Object3d cut(function<bool>(float x, float y, float z) f);
 };
