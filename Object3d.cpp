@@ -1,5 +1,16 @@
 #include "Object3d.hpp"
 
+void reverse_vector(std::vector<int>& face){
+    double temp;
+    for (size_t start = 0, end = face.size()-1; start < end; start++,end--)
+    {
+        temp = face[start];
+        face[start] = face[end];
+        face[end] = temp;
+    }
+    
+};
+
 int Object3d::getVertexCount()
 {
     return this->vertices.size();
@@ -50,11 +61,33 @@ Object3d::Object3d(const std::string &filename)
     file.close();
 }
 
+void Object3d::flip()
+{
+    for (size_t i = 0; i <this->faces.size(); i++)
+    {
+        reverse_vector(this->faces[i]);
+    }
+    
+}
+
 void Object3d::printVertices() const
 {
     std::cout << "# Vertices" << std::endl;
     for (size_t i = 0; i < vertices.size(); i++)
     {
         std::cout << "v " << vertices[i].x << ' ' << vertices[i].y << ' ' << vertices[i].z << std::endl;
+    }
+}
+
+void Object3d::printFaces() const
+{
+    std::cout << "# Faces" << std::endl;
+    for (size_t i = 0; i < faces.size(); i++)
+    {
+        for (size_t j = 0; j < faces[i].size(); j++)
+        {
+            std::cout << faces[i][j] << ' ';
+        }
+        std::cout << std::endl;
     }
 }

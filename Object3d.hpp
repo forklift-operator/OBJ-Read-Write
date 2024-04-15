@@ -4,9 +4,11 @@
 #include <vector>
 #include <string>
 
-class Object3d {
+class Object3d
+{
 private:
-    struct Vertex {
+    struct Vertex
+    {
         double x, y, z;
     };
 
@@ -14,22 +16,16 @@ private:
     std::vector<std::vector<int>> faces;
 
 public:
+    Object3d(const std::string &filename);
+
     int getVertexCount();
     int getFaceCount();
-    void save(const std::string& file);
+    void save(const std::string &file);
     void print(std::ostream &);
     void flip();
 
-
-    Object3d(const std::string& filename);
-
-    void loadFromFile(const std::string& filename);
     void printVertices() const;
-    unsigned GetVertices() const;
 
     void printFaces() const;
     // Object3d cut(function<bool>(float x, float y, float z) f);
-
-
-
 };
