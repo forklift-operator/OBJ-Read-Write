@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <cmath>
 
 
 class Object3d
@@ -32,4 +33,6 @@ public:
     void print(std::ostream &);
     void flip();
 
+    void CreateCube(double x);
+    void CreateSphere(double r,  int N);
 };

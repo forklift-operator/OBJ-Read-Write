@@ -2,16 +2,18 @@
 
 int main()
 {
-    Object3d b("../sphere.obj");
+    Object3d b("../bunny.obj");
+    Object3d c;
+    c.CreateCube(1);
     // std::cout << cube.getFaceCount() << std::endl;
     // cube.flip(); // mirror
     // cube.print(std::cout);
     // cube.save("flipped.obj");
 
     Object3d b_cut = b.cut([](float x, float y, float z) -> bool {
-        return y - x +z< 0.5;
+        return y + x < 2;
     });
-    b_cut.save("./bunny_cut.obj");
+    c.save("./cube.obj");
 
     return 0;
 }
