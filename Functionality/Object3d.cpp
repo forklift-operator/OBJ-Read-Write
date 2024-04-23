@@ -109,29 +109,26 @@ void Object3d::flip()
 
 void Object3d::CreateCube(double x)
 {
-    Vertex v1={0,0,0},
-           v2={x,0,0},
-           v3={x,0,x},
-           v4={0,0,x},
-           v5={0,x,0},
-           v6={x,x,0},
-           v7={x,x,x},
-           v8={0,x,x};
-    vertices.push_back(v1);
-    vertices.push_back(v2);
-    vertices.push_back(v3);
-    vertices.push_back(v4);
-    vertices.push_back(v5);
-    vertices.push_back(v6);
-    vertices.push_back(v7);
-    vertices.push_back(v8);
+    Vertex vs[8] = {{0, 0, 0},
+                    {x, 0, 0},
+                    {x, 0, x},
+                    {0, 0, x},
+                    {0, x, 0},
+                    {x, x, 0},
+                    {x, x, x},
+                    {0, x, x}};
 
+    for (size_t i = 0; i < 8; i++)
+    {
+        vertices.push_back(vs[i]);
+    }
 
     std::vector<int> face;
     for (size_t i = 0; i < 8; i++)
-    {   
+    {
         face.push_back(i);
-        if(i==3||i==7){
+        if (i == 3 || i == 7)
+        {
             faces.push_back(face);
             face.clear();
         }
@@ -153,15 +150,12 @@ void Object3d::CreateCube(double x)
     face.push_back(4);
     face.push_back(7);
     faces.push_back(face);
-
-    
-    
 }
 
 void Object3d::CreateSphere(double radius, int N)
 {
     const double pi = M_PI;
-    const double fi = (1.0 + sqrt(5.0)) / 2.0; 
+    const double fi = (1.0 + sqrt(5.0)) / 2.0;
 
     for (int n = -N; n <= N; ++n)
     {
@@ -174,7 +168,7 @@ void Object3d::CreateSphere(double radius, int N)
         v.z = radius * std::cos(Theta_n);
         vertices.push_back(v);
     }
-    
+
     for (int i = 0; i < 2 * N; ++i)
     {
         std::vector<int> face1 = {i, i + 1, i + 2 * N + 1};
@@ -184,8 +178,6 @@ void Object3d::CreateSphere(double radius, int N)
         faces.push_back(face2);
     }
 }
-
-
 
 void Object3d::printVertices(std::ostream &out) const
 {

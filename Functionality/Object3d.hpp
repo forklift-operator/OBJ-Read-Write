@@ -5,7 +5,7 @@
 #include <string>
 #include <functional>
 #include <cmath>
-
+#include <cstring>
 
 class Object3d
 {
