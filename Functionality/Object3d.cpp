@@ -109,6 +109,8 @@ void Object3d::flip()
 
 void Object3d::CreateCube(double x)
 {
+    vertices.clear();
+
     Vertex vs[8] = {{0, 0, 0},
                     {x, 0, 0},
                     {x, 0, x},
@@ -154,29 +156,25 @@ void Object3d::CreateCube(double x)
 
 void Object3d::CreateSphere(double radius, int N)
 {
-    const double pi = M_PI;
-    const double fi = (1.0 + sqrt(5.0)) / 2.0;
+    const double PI = M_PI;
+    vertices.clear();
 
-    for (int n = -N; n <= N; ++n)
+    // Iterate through phi, theta then convert radius,theta,phi to  XYZ
+    for (double phi = 0.; phi <= 2*PI; phi += PI/5.) // Azimuth [0, 2PI]
     {
-        double Gamma_n = 2 * pi * n / fi;
-        double Theta_n = pi / 2 + std::asin(2 * n / double(2 * N + 1));
-
-        Vertex v;
-        v.x = radius * std::sin(Theta_n) * std::cos(Gamma_n);
-        v.y = radius * std::sin(Theta_n) * std::sin(Gamma_n);
-        v.z = radius * std::cos(Theta_n);
-        vertices.push_back(v);
+        std::vector<int> face;
+        for (double theta = 0., i = 0; theta <= PI; theta += PI/5.,i++) // Elevation [0, PI]
+        {
+            Vertex point;
+            point.x = radius * cos(phi) * sin(theta);
+            point.y = radius * sin(phi) * sin(theta);
+            point.z = radius            * cos(theta);
+            vertices.push_back(point); 
+        }
     }
+    
+    
 
-    for (int i = 0; i < 2 * N; ++i)
-    {
-        std::vector<int> face1 = {i, i + 1, i + 2 * N + 1};
-        std::vector<int> face2 = {i, i + 2 * N + 1, i + 2 * N};
-
-        faces.push_back(face1);
-        faces.push_back(face2);
-    }
 }
 
 void Object3d::printVertices(std::ostream &out) const
@@ -200,4 +198,25 @@ void Object3d::printFaces(std::ostream &out) const
         }
         out << std::endl;
     }
+}
+
+
+
+int main()
+{
+    Object3d b("../bunny.obj");
+    Object3d c;
+    c.CreateSphere(1,100);
+    // std::cout << cube.getFaceCount() << std::endl;
+    // cube.flip(); // mirror
+    // cube.print(std::cout);
+    // cube.save("flipped.obj");
+
+    Object3d b_cut = b.cut([](float x, float y, float z) -> bool {
+        return y - x < 2;
+    });
+    c.print(std::cout);
+    c.save("sphere.obj");
+
+    return 0;
 }
