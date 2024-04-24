@@ -34,5 +34,5 @@ public:
     void flip();
 
     void CreateCube(double x);
-    void CreateSphere(double r,  int N);
+    void CreateSphere(double r);
 };

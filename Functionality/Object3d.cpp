@@ -154,27 +154,34 @@ void Object3d::CreateCube(double x)
     faces.push_back(face);
 }
 
-void Object3d::CreateSphere(double radius, int N)
+void Object3d::CreateSphere(double radius)
 {
     const double PI = M_PI;
     vertices.clear();
 
     // Iterate through phi, theta then convert radius,theta,phi to  XYZ
-    for (double phi = 0.; phi <= 2*PI; phi += PI/5.) // Azimuth [0, 2PI]
+    for (double phi = 0.; phi <= 2 * PI; phi += PI / 5.) // Azimuth [0, 2PI]
     {
         std::vector<int> face;
-        for (double theta = 0., i = 0; theta <= PI; theta += PI/5.,i++) // Elevation [0, PI]
+        for (double theta = 0., i = 0; theta <= PI; theta += PI / 5., i++) // Elevation [0, PI]
         {
             Vertex point;
             point.x = radius * cos(phi) * sin(theta);
             point.y = radius * sin(phi) * sin(theta);
-            point.z = radius            * cos(theta);
-            vertices.push_back(point); 
+            point.z = radius * cos(theta);
+            vertices.push_back(point);
         }
     }
-    
-    
 
+    for (size_t i = 0; i < vertices.size() - 7; i++)
+    {
+        std::vector<int> face;
+        face.push_back(i);
+        face.push_back(i + 1);
+        face.push_back((i + 1) + 6);
+        face.push_back(i + 6);
+        faces.push_back(face);
+    }
 }
 
 void Object3d::printVertices(std::ostream &out) const
@@ -200,21 +207,18 @@ void Object3d::printFaces(std::ostream &out) const
     }
 }
 
-
-
 int main()
 {
     Object3d b("../bunny.obj");
     Object3d c;
-    c.CreateSphere(1,100);
+    c.CreateSphere(1);
     // std::cout << cube.getFaceCount() << std::endl;
     // cube.flip(); // mirror
     // cube.print(std::cout);
     // cube.save("flipped.obj");
 
-    Object3d b_cut = b.cut([](float x, float y, float z) -> bool {
-        return y - x < 2;
-    });
+    Object3d b_cut = b.cut([](float x, float y, float z) -> bool
+                           { return y - x < 2; });
     c.print(std::cout);
     c.save("sphere.obj");
 
